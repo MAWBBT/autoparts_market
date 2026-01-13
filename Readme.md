@@ -213,17 +213,3 @@ python manage.py collectstatic
 3. Зафиксируйте изменения (`git commit -m 'Add some AmazingFeature'`)
 4. Запушьте ветку (`git push origin feature/AmazingFeature`)
 5. Откройте Pull Request
-
-## Лицензия
-
-Этот проект распространяется под лицензией MIT. Подробнее см. в файле `LICENSE`.
-
-## Контакты
-
-По вопросам сотрудничества и поддержки обращайтесь:
-- Email: support@autoparts-store.com
-- Телефон: +7 (XXX) XXX-XX-XX
-
----
-
-*Приложение разработано с использованием Django и PostgreSQL. Все права защищены.*
