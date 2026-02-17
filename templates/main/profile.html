@@ -6,7 +6,7 @@
   <div class="login-card" style="max-width: 500px;">
     <h1>Профиль</h1>
     <p class="subtitle">Ваши данные</p>
-    <p><strong>ФИО:</strong> {{ user.profile.full_name|default:user.get_full_name|default:user.username }}</p>
+    <p><strong>ФИО:</strong> {{ user.profile.full_name|default:user.get_full_name|default:user.get_username }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Телефон:</strong> {{ user.profile.phone|default:"—" }}</p>
     <div class="login-links">

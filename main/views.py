@@ -6,7 +6,24 @@ from .forms import RegistrationForm
 
 def home(request):
     """Главная страница."""
-    return render(request, 'main/index.html')
+    categories = []
+    featured_products = []
+    try:
+        from products.models import Category, Product
+        categories = list(Category.objects.all().order_by('name')[:8])
+        featured_products = list(
+            Product.objects.filter(available=True)
+            .select_related('category')
+            .order_by('-created')[:8]
+        )
+    except Exception:
+        # Если БД/миграции ещё не готовы — просто показываем статическую главную.
+        categories = []
+        featured_products = []
+    return render(request, 'main/index.html', {
+        'categories': categories,
+        'featured_products': featured_products,
+    })
 
 
 def about(request):
@@ -35,6 +52,6 @@ def profile(request):
     from .models import UserProfile
     UserProfile.objects.get_or_create(
         user=request.user,
-        defaults={'full_name': request.user.get_full_name() or request.user.username},
+        defaults={'full_name': request.user.get_full_name() or request.user.get_username()},
     )
     return render(request, 'main/profile.html')

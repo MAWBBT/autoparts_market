@@ -13,8 +13,8 @@ class Command(BaseCommand):
         demo_email = 'admin@autodetail.ru'
         demo_password = 'admin'
         user, created = User.objects.get_or_create(
-            username=demo_email,
-            defaults={'email': demo_email, 'is_staff': True, 'is_superuser': True},
+            email=demo_email,
+            defaults={'full_name': 'Администратор', 'is_staff': True, 'is_superuser': True},
         )
         if created:
             user.set_password(demo_password)

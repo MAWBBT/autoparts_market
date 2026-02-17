@@ -1,35 +1,176 @@
 {% extends 'base.html' %}
-{% block title %}Главная страница — АвтоДеталь{% endblock %}
+{% block title %}АвтоДеталь — магазин автозапчастей{% endblock %}
 {% block content %}
-<div class="text-center mb-5">
-  <h1 class="display-4">Добро пожаловать на наш сайт!</h1>
-  <p class="lead">Магазин автозапчастей «АвтоДеталь» — качественные детали для вашего автомобиля</p>
-</div>
+<section class="hero-surface mb-4">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <div class="hero-badge mb-3">С 2010 года • Подбор по VIN • Доставка по РФ</div>
+      <h1 class="display-5 mb-3 hero-title">Автозапчасти, которым можно доверять</h1>
+      <p class="lead mb-4 hero-lead">
+        Быстрый поиск по артикулу и названию, честные цены, консультации и удобная корзина.
+        Найдите нужную деталь за пару минут.
+      </p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" href="{% url 'products:catalog' %}">Смотреть каталог</a>
+        <a class="btn btn-secondary" href="{% url 'about' %}">О компании</a>
+        <a class="btn btn-secondary" href="{% url 'cart:cart' %}">Открыть корзину</a>
+      </div>
+      <div class="hero-metrics mt-4">
+        <div class="metric">
+          <div class="metric-value">10 000+</div>
+          <div class="metric-label">позиций в каталоге</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">1–3 дня</div>
+          <div class="metric-label">средняя доставка</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">Поддержка</div>
+          <div class="metric-label">поможем с подбором</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="hero-card">
+        <div class="hero-card-title">Быстрый старт</div>
+        <div class="hero-card-text">Перейдите в каталог и попробуйте поиск по артикулу: <strong>BRK-001</strong>, <strong>OIL-005</strong>.</div>
+        <form class="hero-search" method="get" action="{% url 'products:catalog' %}">
+          <input class="form-control" type="search" name="q" placeholder="Поиск по артикулу / названию..." aria-label="Поиск на главной">
+          <button class="btn btn-primary" type="submit">Найти</button>
+        </form>
+        <div class="hero-hint">Совет: используйте фильтр по категориям и сортировку по цене.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="row">
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Качество</h5>
-        <p class="card-text">Только проверенные производители и оригинальные запчасти</p>
+<section class="mb-4">
+  <h2 class="section-title">Почему выбирают «АвтоДеталь»</h2>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card feature-card">
+        <div class="card-body">
+          <div class="icon-circle mb-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </div>
+          <h5 class="card-title mb-2">Проверенные поставщики</h5>
+          <p class="card-text">Работаем с надежными брендами и следим за качеством каждой позиции.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card feature-card">
+        <div class="card-body">
+          <div class="icon-circle mb-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 8v4l3 3"/>
+              <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+          </div>
+          <h5 class="card-title mb-2">Быстрый подбор</h5>
+          <p class="card-text">Поиск по артикулу, названию и описанию — плюс фильтр по категориям.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card feature-card">
+        <div class="card-body">
+          <div class="icon-circle mb-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7h16l2 5-3 9H6L3 7Z"/>
+              <path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </div>
+          <h5 class="card-title mb-2">Удобная корзина</h5>
+          <p class="card-text">Добавляйте товары без перезагрузки, меняйте количество и оформляйте заказ.</p>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Широкий ассортимент</h5>
-        <p class="card-text">Более 10 000 наименований — найдём нужную деталь для любой марки</p>
+</section>
+
+<section class="mb-4">
+  <div class="d-flex align-items-end justify-content-between flex-wrap gap-2">
+    <h2 class="section-title mb-0">Популярные категории</h2>
+    <a href="{% url 'products:catalog' %}" class="link-muted">Все категории →</a>
+  </div>
+  {% if categories %}
+  <div class="category-grid mt-3">
+    {% for cat in categories %}
+    <a class="category-tile" href="{{ cat.get_absolute_url }}">
+      <div class="category-name">{{ cat.name }}</div>
+      {% if cat.description %}<div class="category-desc">{{ cat.description }}</div>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted mt-2 mb-0">Категории появятся после заполнения данных (можно выполнить команду <strong>seed</strong>).</p>
+  {% endif %}
+</section>
+
+<section class="mb-2">
+  <div class="d-flex align-items-end justify-content-between flex-wrap gap-2">
+    <h2 class="section-title mb-0">Новинки в каталоге</h2>
+    <a href="{% url 'products:catalog' %}" class="link-muted">Перейти в каталог →</a>
+  </div>
+
+  {% if featured_products %}
+  <div class="row g-3 mt-1">
+    {% for product in featured_products %}
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card product-card h-100">
+        {% if product.image %}
+        <img class="product-thumb" src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+        <div class="product-thumb placeholder-thumb">Нет фото</div>
+        {% endif %}
+        <div class="card-body d-flex flex-column">
+          <div class="product-meta mb-1">
+            <span class="badge bg-light text-dark border">{{ product.category.name }}</span>
+            {% if product.in_stock %}
+            <span class="badge bg-success">В наличии</span>
+            {% else %}
+            <span class="badge bg-warning text-dark">Под заказ</span>
+            {% endif %}
+          </div>
+          <div class="product-title mb-1">
+            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+          </div>
+          <div class="product-sub mb-3">Артикул: {{ product.article|default:product.id }}</div>
+          <div class="mt-auto d-grid gap-2">
+            <div class="product-price">{{ product.price }} Р</div>
+            <div class="d-grid gap-2">
+              <a class="btn btn-secondary btn-sm" href="{{ product.get_absolute_url }}">Подробнее</a>
+              <form method="post" action="{% url 'cart:add_to_cart' %}" class="add-to-cart-form">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-primary btn-sm w-100">В корзину</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Быстрая доставка</h5>
-        <p class="card-text">Доставка по городу и в регионы. Удобная оплата и гарантия</p>
-      </div>
+  {% else %}
+  <p class="text-muted mt-2 mb-0">Пока нет товаров. Добавьте их через админ-панель или выполните команду <strong>seed</strong>.</p>
+  {% endif %}
+</section>
+
+<section class="contact-strip mt-4" id="contact">
+  <div class="row g-3 align-items-center">
+    <div class="col-lg-8">
+      <h2 class="section-title mb-1">Нужна помощь с подбором?</h2>
+      <p class="mb-0 text-muted">Напишите нам или позвоните — подберём запчасть по VIN и проконсультируем по наличию и доставке.</p>
+    </div>
+    <div class="col-lg-4 text-lg-end">
+      <a class="btn btn-primary" href="tel:+74951234567">+7 (495) 123-45-67</a>
+      <div class="small text-muted mt-2">Пн–Пт 9:00–19:00 • Сб–Вс 10:00–17:00</div>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}

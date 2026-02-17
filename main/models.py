@@ -12,4 +12,4 @@ class UserProfile(models.Model):
     phone = models.CharField(max_length=20, verbose_name='Телефон', blank=True)
 
     def __str__(self):
-        return self.full_name or self.user.username
+        return self.full_name or self.user.get_username()
