@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Регистрация — АвтоДеталь{% endblock %}
+{% block main_class %} class="bg-light"{% endblock %}
+{% block content %}
+<div class="login-wrapper">
+  <div class="login-card">
+    <h1>Регистрация</h1>
+    <p class="subtitle">Создайте аккаунт</p>
+
+    <form method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+      <ul class="form-errors">
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      <div class="form-group">
+        <label for="id_full_name">ФИО</label>
+        <input type="text" name="full_name" id="id_full_name" value="{{ form.full_name.value|default:'' }}" placeholder="Иванов Иван Иванович" maxlength="200" required>
+        {% if form.full_name.errors %}<ul class="field-errors">{% for e in form.full_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group">
+        <label for="id_email">Email</label>
+        <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" placeholder="email@example.com" required>
+        {% if form.email.errors %}<ul class="field-errors">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group">
+        <label for="id_phone">Телефон</label>
+        <div class="password-wrap">
+          <input type="text" name="phone" id="id_phone" value="{{ form.phone.value|default:'' }}" placeholder="+7 (999) 123-45-67" maxlength="20">
+        </div>
+        {% if form.phone.errors %}<ul class="field-errors">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group">
+        <label for="id_password1">Пароль</label>
+        <div class="password-wrap">
+          <input type="password" name="password1" id="id_password1" placeholder="••••••••" required>
+          <button type="button" class="toggle-password" aria-label="Показать пароль" data-target="id_password1">👁</button>
+        </div>
+        {% if form.password1.errors %}<ul class="field-errors">{% for e in form.password1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group">
+        <label for="id_password2">Подтверждение пароля</label>
+        <div class="password-wrap">
+          <input type="password" name="password2" id="id_password2" placeholder="••••••••" required>
+          <button type="button" class="toggle-password" aria-label="Показать пароль" data-target="id_password2">👁</button>
+        </div>
+        {% if form.password2.errors %}<ul class="field-errors">{% for e in form.password2.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" name="agree_terms" id="id_agree_terms" required {% if form.agree_terms.value %}checked{% endif %}>
+        <label for="id_agree_terms">Я согласен с пользовательским соглашением и политикой конфиденциальности</label>
+      </div>
+      {% if form.agree_terms.errors %}<ul class="field-errors">{% for e in form.agree_terms.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+
+    <div class="login-links">
+      <a href="{% url 'login' %}">Уже есть аккаунт? Войти</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.querySelectorAll('.toggle-password').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var id = this.getAttribute('data-target');
+    var input = document.getElementById(id);
+    if (input.type === 'password') { input.type = 'text'; this.textContent = '🙈'; } else { input.type = 'password'; this.textContent = '👁'; }
+  });
+});
+</script>
+{% endblock %}

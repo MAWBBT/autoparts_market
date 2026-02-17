@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}АвтоДеталь — магазин автозапчастей{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <!-- Шапка сайта -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">АвтоДеталь</a>
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Меню">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Главная</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'products:catalog' %}">Каталог</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'about' %}">О нас</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'cart:cart' %}" id="cart-link">Корзина (<span id="cart-count">{{ cart_total_items|default:0 }}</span>)</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'profile' %}">Профиль</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Выход</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Вход</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Основное содержимое -->
+  <main class="container my-4">
+    {% if messages %}
+    <ul class="messages list-unstyled">
+      {% for message in messages %}
+      <li class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% block content %}
+    <!-- Здесь будет уникальное содержимое каждой страницы -->
+    {% endblock %}
+  </main>
+
+  <!-- Подвал сайта -->
+  <footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>АвтоДеталь</h5>
+          <p class="mb-0">Магазин автозапчастей. Качество и надёжность с 2010 года.</p>
+        </div>
+        <div class="col-md-6 text-end">
+          <p class="mb-0">© 2026 Все права защищены</p>
+          <p class="mb-0">Контакты: info@autodetail.ru</p>
+          <p class="mb-0">г. Москва, ул. Автомобильная, д. 15</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+  <script>
+    const csrfToken = '{{ csrf_token }}';
+    const addToCartUrl = '{% url "cart:add_to_cart" %}';
+  </script>
+  <script src="{% static 'js/main.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

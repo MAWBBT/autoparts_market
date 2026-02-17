@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Корзина — АвтоДеталь{% endblock %}
+{% block main_class %} class="bg-light"{% endblock %}
+{% block content %}
+{% if cart and cart.items.all %}
+<h1 class="page-title">Корзина</h1>
+<table class="catalog-table">
+  <thead>
+    <tr>
+      <th>Товар</th>
+      <th>Цена</th>
+      <th>Количество</th>
+      <th>Сумма</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart.items.all %}
+    <tr>
+      <td><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></td>
+      <td>{{ item.product.price }} Р</td>
+      <td>
+        <form method="post" action="{% url 'cart:update_cart_item' item.id %}" class="cart-qty-form">
+          {% csrf_token %}
+          <div class="qty-control">
+            <button type="button" class="qty-minus" aria-label="Уменьшить">−</button>
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" aria-label="Количество">
+            <button type="button" class="qty-plus" aria-label="Увеличить">+</button>
+          </div>
+          <button type="submit" class="btn btn-secondary btn-sm">Изменить</button>
+        </form>
+      </td>
+      <td>{{ item.total_price }} Р</td>
+      <td>
+        <form method="post" action="{% url 'cart:remove_from_cart' item.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary">Удалить</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p><strong>Сумма за товары: {{ cart.total_price }} Р</strong></p>
+<p><strong>Доставка: {{ delivery_cost }} Р</strong> {% if delivery_cost == 0 %}(бесплатно от 5000 Р){% endif %}</p>
+<p><strong>Итого к оплате: {{ total_with_delivery }} Р</strong></p>
+<p><a href="{% url 'cart:checkout' %}" class="btn btn-primary">Оформить заказ</a></p>
+{% else %}
+<section class="empty-cart">
+  <svg class="empty-cart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <path d="M16 10a4 4 0 0 1-8 0"/>
+  </svg>
+  <h2>Корзина пуста</h2>
+  <p>Добавьте товары из каталога</p>
+  <a href="{% url 'products:catalog' %}" class="btn btn-primary">Перейти в каталог</a>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Заказ #{{ order.id }} — АвтоДеталь{% endblock %}
+{% block content %}
+<h1 class="page-title">Заказ #{{ order.id }}</h1>
+<p>Дата: {{ order.created|date:"d.m.Y H:i" }}</p>
+<p>Статус: {{ order.get_status_display }}</p>
+<table class="catalog-table">
+  <thead>
+    <tr>
+      <th>Товар</th>
+      <th>Цена</th>
+      <th>Кол-во</th>
+      <th>Сумма</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for oi in order.items.all %}
+    <tr>
+      <td>{{ oi.product.name }}</td>
+      <td>{{ oi.price }} Р</td>
+      <td>{{ oi.quantity }}</td>
+      <td>{{ oi.total_price }} Р</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p><strong>Сумма за товары: {{ order.total_products }} Р</strong></p>
+<p><strong>Доставка: {{ order.delivery_cost }} Р</strong></p>
+<p><strong>Итого: {{ order.total }} Р</strong></p>
+<p>Способ оплаты: {{ order.payment_method }}</p>
+<p>Доставка: {{ order.delivery_method }}</p>
+<p>Адрес: {{ order.city }}, {{ order.address }}{% if order.postal_code %}, {{ order.postal_code }}{% endif %}</p>
+{% if order.comment %}<p>Комментарий: {{ order.comment }}</p>{% endif %}
+<p>
+  <a href="{% url 'cart:order_list' %}">К списку заказов</a>
+  {% if request.user.is_authenticated and order.user == request.user and order.status != 'issued' and order.status != 'cancelled' %}
+  <form method="post" action="{% url 'cart:order_cancel' order.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary">Отменить заказ</button>
+  </form>
+  {% endif %}
+  {% if order.status == 'issued' %}
+  <a href="{% url 'cart:order_repeat' order.id %}" class="btn btn-primary">Повторить заказ</a>
+  {% endif %}
+</p>
+{% endblock %}

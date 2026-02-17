@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Оформление заказа — АвтоДеталь{% endblock %}
+{% block main_class %} class="bg-light"{% endblock %}
+{% block content %}
+<h1 class="page-title">Оформление заказа</h1>
+<p><strong>Сумма за товары: {{ cart.total_price }} Р</strong></p>
+<p><strong>Доставка: {{ delivery_cost }} Р</strong></p>
+<p><strong>Итого: {{ total_with_delivery }} Р</strong></p>
+
+<form method="post" class="checkout-form">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<ul class="form-errors">{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+  <div class="form-group">
+    <label for="id_full_name">ФИО получателя</label>
+    <input type="text" name="full_name" id="id_full_name" value="{{ form.full_name.value|default:'' }}" maxlength="200" required>
+    {% if form.full_name.errors %}<ul class="field-errors">{% for e in form.full_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+  <div class="form-group">
+    <label for="id_phone">Телефон</label>
+    <input type="text" name="phone" id="id_phone" value="{{ form.phone.value|default:'' }}" maxlength="20" required>
+    {% if form.phone.errors %}<ul class="field-errors">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+  <div class="form-group">
+    <label for="id_email">Email</label>
+    <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" required>
+    {% if form.email.errors %}<ul class="field-errors">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+  <div class="form-group">
+    <label for="id_city">Город</label>
+    <input type="text" name="city" id="id_city" value="{{ form.city.value|default:'' }}" maxlength="100" required>
+    {% if form.city.errors %}<ul class="field-errors">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+  <div class="form-group">
+    <label for="id_address">Улица, дом, квартира</label>
+    <input type="text" name="address" id="id_address" value="{{ form.address.value|default:'' }}" maxlength="300" required>
+    {% if form.address.errors %}<ul class="field-errors">{% for e in form.address.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+  <div class="form-group">
+    <label for="id_postal_code">Индекс</label>
+    <input type="text" name="postal_code" id="id_postal_code" value="{{ form.postal_code.value|default:'' }}" maxlength="20">
+  </div>
+  <div class="form-group">
+    <label for="id_payment_method">Способ оплаты</label>
+    <select name="payment_method" id="id_payment_method" required>
+      <option value="card_online" {% if form.payment_method.value == 'card_online' %}selected{% endif %}>Карта онлайн</option>
+      <option value="cash" {% if form.payment_method.value == 'cash' %}selected{% endif %}>Наличные при получении</option>
+      <option value="card_receive" {% if form.payment_method.value == 'card_receive' %}selected{% endif %}>Картой при получении</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="id_delivery_method">Способ доставки</label>
+    <select name="delivery_method" id="id_delivery_method" required>
+      <option value="courier" {% if form.delivery_method.value == 'courier' %}selected{% endif %}>Курьером</option>
+      <option value="pickup" {% if form.delivery_method.value == 'pickup' %}selected{% endif %}>Самовывоз</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="id_comment">Комментарий к заказу</label>
+    <textarea name="comment" id="id_comment" rows="3">{{ form.comment.value|default:'' }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
+</form>
+<p><a href="{% url 'cart:cart' %}">Вернуться в корзину</a></p>
+{% endblock %}

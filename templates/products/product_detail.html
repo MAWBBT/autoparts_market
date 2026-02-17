@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ product.name }} — АвтоДеталь{% endblock %}
+{% block content %}
+<article>
+  <h1>{{ product.name }}</h1>
+  <div class="product-detail-layout">
+    <div class="product-image">
+      {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" width="300" height="300">
+      {% else %}
+      <img src="https://placehold.co/300x300/e5e7eb/6b7280?text=Нет+фото" alt="" width="300" height="300">
+      {% endif %}
+    </div>
+    <div class="product-info">
+      <p><strong>Артикул:</strong> {{ product.article|default:"—" }}</p>
+      <p><strong>Цена:</strong> {{ product.price }} Р</p>
+      <p><strong>Категория:</strong> <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+      <p><strong>Наличие:</strong> {% if product.in_stock %}В наличии, {{ product.stock }} шт.{% else %}Под заказ{% if product.delivery_days %} ({{ product.delivery_days }}){% endif %}{% endif %}</p>
+      <p class="product-description">{{ product.description }}</p>
+      <form method="post" action="{% url 'cart:add_to_cart' %}" class="add-to-cart-form">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <div class="qty-control">
+          <button type="button" class="qty-minus" aria-label="Уменьшить">−</button>
+          <input type="number" name="quantity" id="quantity" value="1" min="1" max="99" aria-label="Количество">
+          <button type="button" class="qty-plus" aria-label="Увеличить">+</button>
+        </div>
+        <button type="submit" class="btn btn-primary add-to-cart-btn">Добавить в корзину</button>
+      </form>
+    </div>
+  </div>
+</article>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Вход в систему — АвтоДеталь{% endblock %}
+{% block main_class %} class="bg-light"{% endblock %}
+{% block content %}
+<div class="login-wrapper">
+  <div class="login-card">
+    <svg class="icon-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+      <polyline points="10 17 15 12 10 7"/>
+      <line x1="15" y1="12" x2="3" y2="12"/>
+    </svg>
+    <h1>Вход в систему</h1>
+    <p class="subtitle">Войдите в свой аккаунт</p>
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+      <ul class="form-errors">
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      <div class="form-group">
+        <label for="id_username">Email или телефон</label>
+        <input type="text" name="username" id="id_username" value="{{ form.username.value|default:'' }}" placeholder="email@example.com" autocomplete="username" required maxlength="150">
+      </div>
+      <div class="form-group">
+        <label for="id_password">Пароль</label>
+        <div class="password-wrap">
+          <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+          <button type="button" class="toggle-password" aria-label="Показать пароль" data-target="id_password">👁</button>
+        </div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" name="remember_me" id="id_remember_me" value="1">
+        <label for="id_remember_me">Запомнить меня</label>
+      </div>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+
+    <div class="login-links">
+      <a href="{% url 'register' %}">Зарегистрироваться</a>
+      <a href="{% url 'password_reset' %}">Забыли пароль?</a>
+    </div>
+
+    <div class="demo-credentials">
+      <p><strong>Логин (email):</strong> admin@autodetail.ru</p>
+      <p><strong>Пароль:</strong> admin</p>
+    </div>
+  </div>
+</div>
+{% block extra_js %}
+<script>
+document.querySelectorAll('.toggle-password').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var id = this.getAttribute('data-target');
+    var input = document.getElementById(id);
+    if (input.type === 'password') { input.type = 'text'; this.textContent = '🙈'; } else { input.type = 'password'; this.textContent = '👁'; }
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}

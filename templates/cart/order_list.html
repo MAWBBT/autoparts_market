@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}История заказов — АвтоДеталь{% endblock %}
+{% block content %}
+<h1 class="page-title">История заказов</h1>
+
+<h2>Текущие заказы</h2>
+{% if current_orders %}
+<ul class="order-list">
+  {% for order in current_orders %}
+  <li class="order-card">
+    <p><strong>Заказ #{{ order.id }}</strong> от {{ order.created|date:"d.m.Y H:i" }} — {{ order.get_status_display }}</p>
+    <p>Состав: {% for oi in order.items.all %}{{ oi.product.name }} × {{ oi.quantity }}{% if not forloop.last %}; {% endif %}{% endfor %}</p>
+    <p>Сумма: {{ order.total }} Р</p>
+    <p>
+      <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-primary">Подробнее</a>
+      <form method="post" action="{% url 'cart:order_cancel' order.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary">Отменить заказ</button>
+      </form>
+    </p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Нет текущих заказов.</p>
+{% endif %}
+
+<h2>Завершённые заказы</h2>
+{% if completed_orders %}
+<ul class="order-list">
+  {% for order in completed_orders %}
+  <li class="order-card">
+    <p><strong>Заказ #{{ order.id }}</strong> от {{ order.created|date:"d.m.Y H:i" }} — {{ order.get_status_display }}</p>
+    <p>Сумма: {{ order.total }} Р</p>
+    <p>
+      <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-primary">Подробнее</a>
+      {% if order.status == 'issued' %}
+      <a href="{% url 'cart:order_repeat' order.id %}" class="btn btn-secondary">Повторить заказ</a>
+      {% endif %}
+    </p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Нет завершённых заказов.</p>
+{% endif %}
+
+<p><a href="{% url 'profile' %}">В профиль</a></p>
+{% endblock %}
