@@ -59,27 +59,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'store.wsgi.application'
 
+# PostgreSQL (ЛР №7)
+# Настройте параметры подключения к вашей базе данных PostgreSQL
+# Создайте базу данных в PgAdmin перед запуском миграций
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mystore_db',  # Имя базы данных (создайте в PgAdmin)
+        'USER': 'postgres',     # Пользователь PostgreSQL
+        'PASSWORD': '12345678', # Пароль PostgreSQL (измените на свой)
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
-# PostgreSQL (ЛР №7)
-# Чтобы включить Postgres, установите переменную окружения DJANGO_USE_POSTGRES=1
-# и задайте параметры POSTGRES_DB/POSTGRES_USER/POSTGRES_PASSWORD (и при необходимости HOST/PORT).
-if os.environ.get('DJANGO_USE_POSTGRES') == '1':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('POSTGRES_DB', 'mystore_db'),
-            'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', ''),
-            'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-            'PORT': os.environ.get('POSTGRES_PORT', '5432'),
-        }
-    }
+# Для переключения обратно на SQLite3 (если нужно):
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -107,9 +107,25 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-# Email (для сброса пароля — в режиме разработки в консоль)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@autodetail.ru'
+# Email настройки для отправки реальных писем
+# Для разработки можно использовать консольный бэкенд:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Для реальной отправки email используйте SMTP:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')  # Для Gmail
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')  # Ваш email
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Пароль приложения или пароль email
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@autodetail.ru')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# Если EMAIL_HOST_USER не задан, используем консольный бэкенд для разработки
+if not EMAIL_HOST_USER:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # DRF + JWT (ЛР №7)
 REST_FRAMEWORK = {

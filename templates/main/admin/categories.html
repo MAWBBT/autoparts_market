@@ -1,0 +1,55 @@
+{% extends 'main/admin/base.html' %}
+
+{% block content %}
+<div class="admin-header d-flex justify-content-between align-items-center">
+  <div>
+    <h1 class="mb-0"><i class="bi bi-tags"></i> Категории</h1>
+    <p class="text-muted mb-0">Управление категориями товаров</p>
+  </div>
+  <a href="{% url 'admin_panel:category_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-circle"></i> Создать категорию
+  </a>
+</div>
+
+<div class="table-card">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Название</th>
+          <th>URL (slug)</th>
+          <th>Описание</th>
+          <th>Товаров</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+        <tr>
+          <td>{{ category.id }}</td>
+          <td><strong>{{ category.name }}</strong></td>
+          <td><code>{{ category.slug }}</code></td>
+          <td>{{ category.description|truncatewords:10|default:"—" }}</td>
+          <td>
+            <span class="badge bg-info">{{ category.products.count }}</span>
+          </td>
+          <td>
+            <a href="{% url 'admin_panel:category_edit' category.id %}" class="btn btn-sm btn-warning btn-action" title="Редактировать">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'admin_panel:category_delete' category.id %}" class="btn btn-sm btn-danger btn-action" title="Удалить">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted">Категории не найдены</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

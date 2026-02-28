@@ -31,7 +31,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=100)
     role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.USER)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)  # По умолчанию неактивен (ЛР №7)
     is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
@@ -45,3 +45,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.full_name or self.email
 
+    def get_full_name(self):
+        """Возвращает полное имя пользователя."""
+        return self.full_name
+
+    def get_username(self):
+        """Возвращает email как username (для совместимости с Django)."""
+        return self.email

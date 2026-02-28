@@ -1,8 +1,94 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeForm
 from .models import UserProfile
 
 User = get_user_model()
+
+
+class ProfileEditForm(forms.ModelForm):
+    """Форма для редактирования профиля пользователя."""
+    email = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'email@example.com'}),
+        required=True,
+    )
+    full_name = forms.CharField(
+        label='Полное имя',
+        max_length=200,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Иванов Иван Иванович'}),
+        required=True,
+    )
+
+    class Meta:
+        model = UserProfile
+        fields = ['full_name', 'phone']
+        widgets = {
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '+7 (999) 123-45-67'
+            }),
+        }
+        labels = {
+            'phone': 'Телефон',
+        }
+        help_texts = {
+            'phone': 'Необязательное поле. Можно оставить пустым.',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user:
+            self.fields['email'].initial = self.user.email
+            self.fields['full_name'].initial = self.user.full_name or (self.instance.full_name if self.instance.pk else '')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and self.user:
+            # Проверяем, что email уникален (кроме текущего пользователя)
+            if User.objects.filter(email=email).exclude(id=self.user.id).exists():
+                raise forms.ValidationError('Пользователь с таким email уже существует.')
+        return email
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        if self.user:
+            # Обновляем email и full_name в модели User
+            self.user.email = self.cleaned_data['email']
+            self.user.full_name = self.cleaned_data['full_name']
+            if commit:
+                self.user.save()
+                profile.save()
+        return profile
+
+
+class PasswordChangeForm(BasePasswordChangeForm):
+    """Форма для изменения пароля пользователя в профиле."""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Улучшаем стили полей
+        self.fields['old_password'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Введите текущий пароль'
+        })
+        self.fields['new_password1'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Минимум 8 символов'
+        })
+        self.fields['new_password2'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Повторите новый пароль'
+        })
+        # Улучшаем метки
+        self.fields['old_password'].label = 'Текущий пароль'
+        self.fields['new_password1'].label = 'Новый пароль'
+        self.fields['new_password2'].label = 'Подтверждение нового пароля'
+        
+        # Добавляем help text для нового пароля
+        if self.fields['new_password1'].help_text:
+            self.fields['new_password1'].help_text = 'Минимум 8 символов. Рекомендуется использовать комбинацию букв, цифр и символов.'
 
 
 class RegistrationForm(forms.Form):

@@ -1,6 +1,7 @@
-from django.urls import path, reverse_lazy
+from django.urls import path, reverse_lazy, include
 from django.contrib.auth import views as auth_views
 from . import views
+from . import admin_urls
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -25,4 +26,7 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='main/password_reset_complete.html',
     ), name='password_reset_complete'),
+    
+    # Админ-панель
+    path('admin-panel/', include(admin_urls)),
 ]

@@ -1,17 +1,249 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Профиль — АвтоДеталь{% endblock %}
-{% block main_class %} class="bg-light"{% endblock %}
+
+{% block extra_css %}
+<style>
+  .profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .profile-card {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  .profile-header {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+  .profile-header h1 {
+    margin: 0;
+    color: #333;
+  }
+  .profile-header p {
+    color: #666;
+    margin: 5px 0 0 0;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .form-control {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  .form-control:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+  .btn-save {
+    background: #3498db;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .btn-save:hover {
+    background: #2980b9;
+  }
+  .profile-links {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+  }
+  .profile-links a {
+    display: inline-block;
+    margin-right: 20px;
+    color: #3498db;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  .profile-links a:hover {
+    background: #f0f0f0;
+  }
+  .help-text {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+  }
+  .errorlist {
+    color: #e74c3c;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+  }
+  .errorlist li {
+    margin-bottom: 5px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="login-wrapper">
-  <div class="login-card" style="max-width: 500px;">
-    <h1>Профиль</h1>
-    <p class="subtitle">Ваши данные</p>
-    <p><strong>ФИО:</strong> {{ user.profile.full_name|default:user.get_full_name|default:user.get_username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Телефон:</strong> {{ user.profile.phone|default:"—" }}</p>
-    <div class="login-links">
-      <a href="{% url 'cart:order_list' %}">История заказов</a>
-      <a href="{% url 'logout' %}">Выйти</a>
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <h1><i class="bi bi-person-circle"></i> Мой профиль</h1>
+      <p>Управление личными данными</p>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Форма редактирования профиля -->
+    <h3 style="margin-bottom: 20px; color: #333;"><i class="bi bi-person"></i> Личные данные</h3>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="profile">
+      
+      <div class="form-group">
+        <label class="form-label" for="{{ profile_form.email.id_for_label }}">
+          Email <span style="color: #e74c3c;">*</span>
+        </label>
+        {{ profile_form.email }}
+        {% if profile_form.email.errors %}
+        <ul class="errorlist">
+          {% for error in profile_form.email.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ profile_form.full_name.id_for_label }}">
+          Полное имя <span style="color: #e74c3c;">*</span>
+        </label>
+        {{ profile_form.full_name }}
+        {% if profile_form.full_name.errors %}
+        <ul class="errorlist">
+          {% for error in profile_form.full_name.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ profile_form.phone.id_for_label }}">
+          Телефон
+        </label>
+        {{ profile_form.phone }}
+        {% if profile_form.phone.help_text %}
+        <div class="help-text">{{ profile_form.phone.help_text }}</div>
+        {% endif %}
+        {% if profile_form.phone.errors %}
+        <ul class="errorlist">
+          {% for error in profile_form.phone.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <div style="margin-top: 30px;">
+        <button type="submit" class="btn-save">
+          <i class="bi bi-check-circle"></i> Сохранить изменения
+        </button>
+      </div>
+    </form>
+
+    <!-- Форма изменения пароля -->
+    <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #f0f0f0;">
+      <h3 style="margin-bottom: 20px; color: #333;"><i class="bi bi-shield-lock"></i> Изменение пароля</h3>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="password">
+        
+        <div class="form-group">
+          <label class="form-label" for="{{ password_form.old_password.id_for_label }}">
+            Текущий пароль <span style="color: #e74c3c;">*</span>
+          </label>
+          {{ password_form.old_password }}
+          {% if password_form.old_password.errors %}
+          <ul class="errorlist">
+            {% for error in password_form.old_password.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ password_form.new_password1.id_for_label }}">
+            Новый пароль <span style="color: #e74c3c;">*</span>
+          </label>
+          {{ password_form.new_password1 }}
+          {% if password_form.new_password1.errors %}
+          <ul class="errorlist">
+            {% for error in password_form.new_password1.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          {% if password_form.new_password1.help_text %}
+          <div class="help-text">{{ password_form.new_password1.help_text }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ password_form.new_password2.id_for_label }}">
+            Подтверждение нового пароля <span style="color: #e74c3c;">*</span>
+          </label>
+          {{ password_form.new_password2 }}
+          {% if password_form.new_password2.errors %}
+          <ul class="errorlist">
+            {% for error in password_form.new_password2.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+
+        <div style="margin-top: 30px;">
+          <button type="submit" class="btn-save" style="background: #27ae60;">
+            <i class="bi bi-key"></i> Изменить пароль
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="profile-links">
+      <a href="{% url 'cart:order_list' %}">
+        <i class="bi bi-bag-check"></i> История заказов
+      </a>
+      {% if user.role == 'admin' or user.is_superuser %}
+      <a href="{% url 'admin_panel:dashboard' %}">
+        <i class="bi bi-shield-check"></i> Админ-панель
+      </a>
+      {% endif %}
+      <a href="{% url 'logout' %}">
+        <i class="bi bi-box-arrow-right"></i> Выйти
+      </a>
     </div>
   </div>
 </div>

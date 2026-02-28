@@ -1,27 +1,361 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}О нас — АвтоДеталь{% endblock %}
+
+{% block extra_css %}
+<style>
+  .about-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .about-hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .about-hero p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+  }
+  .about-section {
+    padding: 60px 0;
+  }
+  .about-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+  }
+  .about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+  .about-card .icon {
+    font-size: 3rem;
+    color: #3498db;
+    margin-bottom: 20px;
+  }
+  .about-card h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  .about-card p {
+    color: #666;
+    line-height: 1.8;
+  }
+  .stats-section {
+    background: #f8f9fa;
+    padding: 60px 0;
+    margin: 60px 0;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 30px;
+  }
+  .stat-number {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 10px;
+  }
+  .stat-label {
+    font-size: 1.1rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .values-list {
+    list-style: none;
+    padding: 0;
+  }
+  .values-list li {
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+  }
+  .values-list li:last-child {
+    border-bottom: none;
+  }
+  .values-list i {
+    color: #27ae60;
+    font-size: 1.5rem;
+    margin-right: 15px;
+    width: 30px;
+  }
+  .contact-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 40px;
+    margin-top: 40px;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+  .contact-item i {
+    font-size: 1.5rem;
+    margin-right: 20px;
+    width: 30px;
+    opacity: 0.9;
+  }
+  .contact-item a {
+    color: white;
+    text-decoration: none;
+  }
+  .contact-item a:hover {
+    text-decoration: underline;
+  }
+  .team-section {
+    background: white;
+    padding: 60px 0;
+  }
+  .team-member {
+    text-align: center;
+    padding: 20px;
+  }
+  .team-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 4rem;
+    color: white;
+  }
+  @media (max-width: 768px) {
+    .about-hero h1 {
+      font-size: 2rem;
+    }
+    .about-hero p {
+      font-size: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1 class="mb-4">О нашей компании</h1>
-<div class="row">
-  <div class="col-md-6">
-    <h2>Наша миссия</h2>
-    <p>Мы помогаем владельцам автомобилей и автосервисам находить качественные запчасти через удобный каталог и профессиональные консультации.</p>
-    <p>Наша цель — сделать покупку автозапчастей простой, быстрой и надёжной для каждого клиента.</p>
-  </div>
-  <div class="col-md-6">
-    <h2>Наши ценности</h2>
-    <ul class="list-group">
-      <li class="list-group-item">Качество и проверенные поставщики</li>
-      <li class="list-group-item">Честные цены и прозрачные условия</li>
-      <li class="list-group-item">Поддержка и консультации по подбору</li>
-      <li class="list-group-item">Современный сервис и удобная доставка</li>
-    </ul>
+<!-- Hero секция -->
+<div class="about-hero">
+  <div class="container">
+    <h1><i class="bi bi-building"></i> О компании АвтоДеталь</h1>
+    <p>Ваш надёжный партнёр в мире автозапчастей с 2010 года</p>
   </div>
 </div>
-<div class="mt-5">
-  <h2>Контакты</h2>
-  <p><strong>Email:</strong> info@autodetail.ru</p>
-  <p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
-  <p><strong>Адрес:</strong> г. Москва, ул. Автомобильная, д. 15</p>
+
+<!-- Основная информация -->
+<div class="container about-section">
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <div class="about-card">
+        <h2 style="color: #333; margin-bottom: 20px;">Добро пожаловать в АвтоДеталь!</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8; color: #666;">
+          Мы — ведущий интернет-магазин автозапчастей, специализирующийся на предоставлении качественных 
+          запчастей для всех типов автомобилей. С 2010 года мы помогаем владельцам автомобилей и автосервисам 
+          находить нужные детали быстро, удобно и по доступным ценам.
+        </p>
+        <p style="font-size: 1.1rem; line-height: 1.8; color: #666;">
+          Наша команда профессионалов всегда готова помочь вам с подбором запчастей, консультациями 
+          и решением любых вопросов. Мы гордимся высоким качеством обслуживания и доверием наших клиентов.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Наши преимущества -->
+  <div class="row mb-5">
+    <div class="col-12 mb-4">
+      <h2 class="text-center" style="color: #333; margin-bottom: 50px;">
+        <i class="bi bi-star-fill" style="color: #f39c12;"></i> Почему выбирают нас?
+      </h2>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="about-card">
+        <div class="icon">
+          <i class="bi bi-shield-check"></i>
+        </div>
+        <h3>Гарантия качества</h3>
+        <p>Все запчасти проходят тщательную проверку перед отправкой. Мы работаем только с проверенными поставщиками и даём гарантию на всю продукцию.</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="about-card">
+        <div class="icon">
+          <i class="bi bi-truck"></i>
+        </div>
+        <h3>Быстрая доставка</h3>
+        <p>Доставляем заказы по всей России. В наличии более 10 000 позиций, которые можно получить уже на следующий день после заказа.</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="about-card">
+        <div class="icon">
+          <i class="bi bi-currency-exchange"></i>
+        </div>
+        <h3>Честные цены</h3>
+        <p>Прозрачное ценообразование без скрытых комиссий. Регулярные акции и скидки для постоянных клиентов.</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="about-card">
+        <div class="icon">
+          <i class="bi bi-headset"></i>
+        </div>
+        <h3>Профессиональная поддержка</h3>
+        <p>Наши специалисты помогут подобрать нужные запчасти, ответят на все вопросы и предоставят консультацию по установке.</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="about-card">
+        <div class="icon">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <h3>Работаем 24/7</h3>
+        <p>Оформляйте заказы в любое время суток. Наш интернет-магазин работает круглосуточно, а служба поддержки — с 9:00 до 21:00.</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="about-card">
+        <div class="icon">
+          <i class="bi bi-arrow-repeat"></i>
+        </div>
+        <h3>Удобный возврат</h3>
+        <p>Если запчасть не подошла, вы можете вернуть её в течение 14 дней. Мы вернём деньги или обменяем на подходящую деталь.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Статистика -->
+  <div class="stats-section">
+    <div class="container">
+      <h2 class="text-center mb-5" style="color: #333;">
+        <i class="bi bi-graph-up-arrow"></i> АвтоДеталь в цифрах
+      </h2>
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-item">
+            <div class="stat-number">14+</div>
+            <div class="stat-label">Лет на рынке</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-item">
+            <div class="stat-number">50K+</div>
+            <div class="stat-label">Довольных клиентов</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-item">
+            <div class="stat-number">10K+</div>
+            <div class="stat-label">Товаров в каталоге</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-item">
+            <div class="stat-number">100+</div>
+            <div class="stat-label">Городов доставки</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Наши ценности -->
+  <div class="row mb-5">
+    <div class="col-md-6 mb-4">
+      <div class="about-card">
+        <h3><i class="bi bi-bullseye" style="color: #3498db;"></i> Наша миссия</h3>
+        <p style="line-height: 1.8;">
+          Сделать покупку автозапчастей простой, быстрой и надёжной для каждого клиента. 
+          Мы стремимся предоставить лучший сервис, качественные товары и профессиональную поддержку, 
+          чтобы каждый автомобилист мог быстро найти нужные запчасти и вернуть свой автомобиль на дорогу.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="about-card">
+        <h3><i class="bi bi-heart-fill" style="color: #e74c3c;"></i> Наши ценности</h3>
+        <ul class="values-list">
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span><strong>Качество</strong> — только проверенные поставщики и сертифицированная продукция</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span><strong>Честность</strong> — прозрачные цены и условия сотрудничества</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span><strong>Поддержка</strong> — профессиональные консультации и помощь в подборе</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span><strong>Инновации</strong> — современные технологии и удобный сервис</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span><strong>Надёжность</strong> — стабильная работа и выполнение обязательств</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Контакты -->
+  <div class="contact-card">
+    <h2 class="mb-4" style="text-align: center;">
+      <i class="bi bi-envelope-paper"></i> Свяжитесь с нами
+    </h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="contact-item">
+          <i class="bi bi-envelope"></i>
+          <div>
+            <strong>Email</strong><br>
+            <a href="mailto:info@autodetail.ru">info@autodetail.ru</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="contact-item">
+          <i class="bi bi-telephone"></i>
+          <div>
+            <strong>Телефон</strong><br>
+            <a href="tel:+74951234567">+7 (495) 123-45-67</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="contact-item">
+          <i class="bi bi-geo-alt"></i>
+          <div>
+            <strong>Адрес</strong><br>
+            г. Москва, ул. Автомобильная, д. 15
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-12 text-center">
+        <p style="opacity: 0.9; margin: 0;">
+          <i class="bi bi-clock"></i> Время работы: Пн-Вс с 9:00 до 21:00<br>
+          <small style="opacity: 0.8;">Интернет-магазин работает круглосуточно</small>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

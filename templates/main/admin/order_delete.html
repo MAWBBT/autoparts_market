@@ -1,0 +1,36 @@
+{% extends 'main/admin/base.html' %}
+
+{% block content %}
+<div class="admin-header">
+  <h1 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Удаление заказа</h1>
+</div>
+
+<div class="table-card">
+  <div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i> Вы уверены, что хотите удалить заказ <strong>#{{ order.id }}</strong>?
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5>Информация о заказе:</h5>
+      <p><strong>ID:</strong> #{{ order.id }}</p>
+      <p><strong>Получатель:</strong> {{ order.full_name }}</p>
+      <p><strong>Сумма:</strong> {{ order.total }} ₽</p>
+      <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+      <p><strong>Дата:</strong> {{ order.created|date:"d.m.Y H:i" }}</p>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="d-flex justify-content-between">
+      <a href="{% url 'admin_panel:orders' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Отмена
+      </a>
+      <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash"></i> Удалить заказ
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
