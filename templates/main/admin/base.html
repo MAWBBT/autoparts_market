@@ -158,9 +158,12 @@
         </a>
       </li>
       <li>
-        <a href="{% url 'logout' %}">
-          <i class="bi bi-box-arrow-right"></i> Выход
-        </a>
+        <form method="post" action="{% url 'logout' %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-link text-decoration-none p-0 text-white border-0">
+            <i class="bi bi-box-arrow-right"></i> Выход
+          </button>
+        </form>
       </li>
     </ul>
   </div>

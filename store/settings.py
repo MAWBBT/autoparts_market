@@ -67,7 +67,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mystore_db',  # Имя базы данных (создайте в PgAdmin)
         'USER': 'postgres',     # Пользователь PostgreSQL
-        'PASSWORD': '12345678', # Пароль PostgreSQL (измените на свой)
+        'PASSWORD': '1', # Пароль PostgreSQL (измените на свой)
         'HOST': 'localhost',
         'PORT': '5432',
     }

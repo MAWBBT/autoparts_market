@@ -245,8 +245,9 @@ p { margin: 0 0 0.75rem; color: var(--color-text-muted); }
   font-size: 1.1rem;
   margin: 0 10px;
   transition: opacity 0.2s ease;
+  text-decoration: none;
 }
-.nav-link:hover { opacity: 0.9; }
+.nav-link:hover { opacity: 0.9; text-decoration: underline; }
 /* Плавное появление выпадающего меню на мобильных */
 .navbar-collapse.collapsing {
   transition: height 0.25s ease-out;
