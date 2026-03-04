@@ -43,6 +43,11 @@
                 <i class="bi bi-shield-check"></i> Админ-панель
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin:index' %}" target="_blank" title="Администрирование Django">
+                <i class="bi bi-gear-wide-connected"></i> Django Admin
+              </a>
+            </li>
             {% endif %}
             <li class="nav-item">
               <form method="post" action="{% url 'logout' %}" class="d-inline">
