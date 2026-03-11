@@ -56,6 +56,7 @@ def profile(request):
     """Профиль пользователя: данные и ссылка на историю заказов."""
     from .models import UserProfile
     from .forms import ProfileEditForm, PasswordChangeForm
+    from cart.models import Order
     
     # Получаем или создаем профиль пользователя
     profile, created = UserProfile.objects.get_or_create(
@@ -91,11 +92,17 @@ def profile(request):
     else:
         profile_form = ProfileEditForm(instance=profile, user=request.user)
         password_form = PasswordChangeForm(user=request.user)
+
+    orders = Order.objects.filter(user=request.user).prefetch_related("items__product").order_by("-created")
+    current_orders = [o for o in orders if o.status not in ("issued", "cancelled", "completed")]
+    completed_orders = [o for o in orders if o.status in ("issued", "cancelled", "completed")]
     
     return render(request, 'main/profile.html', {
         'profile_form': profile_form,
         'password_form': password_form,
         'profile': profile,
+        'current_orders': current_orders,
+        'completed_orders': completed_orders,
     })
 
 

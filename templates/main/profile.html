@@ -94,6 +94,25 @@
   .errorlist li {
     margin-bottom: 5px;
   }
+
+  .profile-tabs .nav-link {
+    color: #555;
+    font-weight: 600;
+  }
+  .profile-tabs .nav-link.active {
+    color: #0d6efd;
+  }
+  .order-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    font-size: .85rem;
+    color: #334155;
+  }
 </style>
 {% endblock %}
 
@@ -114,128 +133,222 @@
       {% endfor %}
     {% endif %}
 
-    <!-- Форма редактирования профиля -->
-    <h3 style="margin-bottom: 20px; color: #333;"><i class="bi bi-person"></i> Личные данные</h3>
-    <form method="post">
-      {% csrf_token %}
-      <input type="hidden" name="form_type" value="profile">
-      
-      <div class="form-group">
-        <label class="form-label" for="{{ profile_form.email.id_for_label }}">
-          Email <span style="color: #e74c3c;">*</span>
-        </label>
-        {{ profile_form.email }}
-        {% if profile_form.email.errors %}
-        <ul class="errorlist">
-          {% for error in profile_form.email.errors %}
-          <li>{{ error }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="{{ profile_form.full_name.id_for_label }}">
-          Полное имя <span style="color: #e74c3c;">*</span>
-        </label>
-        {{ profile_form.full_name }}
-        {% if profile_form.full_name.errors %}
-        <ul class="errorlist">
-          {% for error in profile_form.full_name.errors %}
-          <li>{{ error }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="{{ profile_form.phone.id_for_label }}">
-          Телефон
-        </label>
-        {{ profile_form.phone }}
-        {% if profile_form.phone.help_text %}
-        <div class="help-text">{{ profile_form.phone.help_text }}</div>
-        {% endif %}
-        {% if profile_form.phone.errors %}
-        <ul class="errorlist">
-          {% for error in profile_form.phone.errors %}
-          <li>{{ error }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-
-      <div style="margin-top: 30px;">
-        <button type="submit" class="btn-save">
-          <i class="bi bi-check-circle"></i> Сохранить изменения
+    <ul class="nav nav-pills profile-tabs mb-3" id="profileTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-data" data-bs-toggle="pill" data-bs-target="#pane-data" type="button" role="tab">
+          <i class="bi bi-person"></i> Данные
         </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-orders" data-bs-toggle="pill" data-bs-target="#pane-orders" type="button" role="tab">
+          <i class="bi bi-bag-check"></i> Заказы
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-security" data-bs-toggle="pill" data-bs-target="#pane-security" type="button" role="tab">
+          <i class="bi bi-shield-lock"></i> Безопасность
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="profileTabsContent">
+      <div class="tab-pane fade show active" id="pane-data" role="tabpanel" aria-labelledby="tab-data">
+        <h3 style="margin-bottom: 20px; color: #333;"><i class="bi bi-person"></i> Личные данные</h3>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="profile">
+          
+          <div class="form-group">
+            <label class="form-label" for="{{ profile_form.email.id_for_label }}">
+              Email <span style="color: #e74c3c;">*</span>
+            </label>
+            {{ profile_form.email }}
+            {% if profile_form.email.errors %}
+            <ul class="errorlist">
+              {% for error in profile_form.email.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ profile_form.full_name.id_for_label }}">
+              Полное имя <span style="color: #e74c3c;">*</span>
+            </label>
+            {{ profile_form.full_name }}
+            {% if profile_form.full_name.errors %}
+            <ul class="errorlist">
+              {% for error in profile_form.full_name.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ profile_form.phone.id_for_label }}">
+              Телефон
+            </label>
+            {{ profile_form.phone }}
+            {% if profile_form.phone.help_text %}
+            <div class="help-text">{{ profile_form.phone.help_text }}</div>
+            {% endif %}
+            {% if profile_form.phone.errors %}
+            <ul class="errorlist">
+              {% for error in profile_form.phone.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div style="margin-top: 30px;">
+            <button type="submit" class="btn-save">
+              <i class="bi bi-check-circle"></i> Сохранить изменения
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
 
-    <!-- Форма изменения пароля -->
-    <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #f0f0f0;">
-      <h3 style="margin-bottom: 20px; color: #333;"><i class="bi bi-shield-lock"></i> Изменение пароля</h3>
-      <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="form_type" value="password">
-        
-        <div class="form-group">
-          <label class="form-label" for="{{ password_form.old_password.id_for_label }}">
-            Текущий пароль <span style="color: #e74c3c;">*</span>
-          </label>
-          {{ password_form.old_password }}
-          {% if password_form.old_password.errors %}
-          <ul class="errorlist">
-            {% for error in password_form.old_password.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </div>
+      <div class="tab-pane fade" id="pane-orders" role="tabpanel" aria-labelledby="tab-orders">
+        <h3 style="margin-bottom: 20px; color: #333;"><i class="bi bi-bag-check"></i> История заказов</h3>
 
-        <div class="form-group">
-          <label class="form-label" for="{{ password_form.new_password1.id_for_label }}">
-            Новый пароль <span style="color: #e74c3c;">*</span>
-          </label>
-          {{ password_form.new_password1 }}
-          {% if password_form.new_password1.errors %}
-          <ul class="errorlist">
-            {% for error in password_form.new_password1.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-          {% if password_form.new_password1.help_text %}
-          <div class="help-text">{{ password_form.new_password1.help_text }}</div>
-          {% endif %}
+        <h5 class="mb-2">Текущие</h5>
+        {% if current_orders %}
+        <div class="accordion mb-3" id="ordersCurrent">
+          {% for order in current_orders %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="h-cur-{{ order.id }}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c-cur-{{ order.id }}">
+                <strong class="me-2">Заказ #{{ order.id }}</strong>
+                <span class="order-pill">{{ order.get_status_display }}</span>
+                <span class="ms-auto text-muted small">{{ order.created|date:"d.m.Y H:i" }}</span>
+              </button>
+            </h2>
+            <div id="c-cur-{{ order.id }}" class="accordion-collapse collapse" data-bs-parent="#ordersCurrent">
+              <div class="accordion-body">
+                <div class="mb-2">
+                  <strong>Сумма:</strong> {{ order.total }} Р
+                </div>
+                <div class="mb-3">
+                  <strong>Состав:</strong>
+                  <ul class="mb-0">
+                    {% for oi in order.items.all %}
+                    <li>{{ oi.product.name }} × {{ oi.quantity }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <a class="btn btn-primary btn-sm" href="{% url 'cart:order_detail' order.id %}">Подробнее</a>
+                  <form method="post" action="{% url 'cart:order_cancel' order.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary btn-sm">Отменить</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
+        {% else %}
+        <p class="text-muted">Нет текущих заказов.</p>
+        {% endif %}
 
-        <div class="form-group">
-          <label class="form-label" for="{{ password_form.new_password2.id_for_label }}">
-            Подтверждение нового пароля <span style="color: #e74c3c;">*</span>
-          </label>
-          {{ password_form.new_password2 }}
-          {% if password_form.new_password2.errors %}
-          <ul class="errorlist">
-            {% for error in password_form.new_password2.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
+        <h5 class="mb-2">Завершённые</h5>
+        {% if completed_orders %}
+        <div class="accordion" id="ordersCompleted">
+          {% for order in completed_orders %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="h-done-{{ order.id }}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c-done-{{ order.id }}">
+                <strong class="me-2">Заказ #{{ order.id }}</strong>
+                <span class="order-pill">{{ order.get_status_display }}</span>
+                <span class="ms-auto text-muted small">{{ order.created|date:"d.m.Y H:i" }}</span>
+              </button>
+            </h2>
+            <div id="c-done-{{ order.id }}" class="accordion-collapse collapse" data-bs-parent="#ordersCompleted">
+              <div class="accordion-body">
+                <div class="mb-2">
+                  <strong>Сумма:</strong> {{ order.total }} Р
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <a class="btn btn-primary btn-sm" href="{% url 'cart:order_detail' order.id %}">Подробнее</a>
+                  {% if order.status == 'issued' %}
+                  <a class="btn btn-secondary btn-sm" href="{% url 'cart:order_repeat' order.id %}">Повторить</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
+        {% else %}
+        <p class="text-muted">Нет завершённых заказов.</p>
+        {% endif %}
+      </div>
 
-        <div style="margin-top: 30px;">
-          <button type="submit" class="btn-save" style="background: #27ae60;">
-            <i class="bi bi-key"></i> Изменить пароль
-          </button>
-        </div>
-      </form>
+      <div class="tab-pane fade" id="pane-security" role="tabpanel" aria-labelledby="tab-security">
+        <h3 style="margin-bottom: 20px; color: #333;"><i class="bi bi-shield-lock"></i> Изменение пароля</h3>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="password">
+          
+          <div class="form-group">
+            <label class="form-label" for="{{ password_form.old_password.id_for_label }}">
+              Текущий пароль <span style="color: #e74c3c;">*</span>
+            </label>
+            {{ password_form.old_password }}
+            {% if password_form.old_password.errors %}
+            <ul class="errorlist">
+              {% for error in password_form.old_password.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ password_form.new_password1.id_for_label }}">
+              Новый пароль <span style="color: #e74c3c;">*</span>
+            </label>
+            {{ password_form.new_password1 }}
+            {% if password_form.new_password1.errors %}
+            <ul class="errorlist">
+              {% for error in password_form.new_password1.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            {% if password_form.new_password1.help_text %}
+            <div class="help-text">{{ password_form.new_password1.help_text }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ password_form.new_password2.id_for_label }}">
+              Подтверждение нового пароля <span style="color: #e74c3c;">*</span>
+            </label>
+            {{ password_form.new_password2 }}
+            {% if password_form.new_password2.errors %}
+            <ul class="errorlist">
+              {% for error in password_form.new_password2.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div style="margin-top: 30px;">
+            <button type="submit" class="btn-save" style="background: #27ae60;">
+              <i class="bi bi-key"></i> Изменить пароль
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <div class="profile-links">
-      <a href="{% url 'cart:order_list' %}">
-        <i class="bi bi-bag-check"></i> История заказов
-      </a>
       {% if user.role == 'admin' or user.is_superuser %}
       <a href="{% url 'admin_panel:dashboard' %}">
         <i class="bi bi-shield-check"></i> Админ-панель

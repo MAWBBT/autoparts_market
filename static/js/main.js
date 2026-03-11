@@ -18,8 +18,16 @@
       },
       body: body
     })
-      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (r.status === 401 || r.status === 403) {
+          var next = encodeURIComponent(window.location.pathname + window.location.search);
+          window.location.href = '/login/?next=' + next;
+          return null;
+        }
+        return r.json();
+      })
       .then(function (data) {
+        if (!data) return;
         if (data.success) {
           var el = document.getElementById('cart-count');
           if (el) el.textContent = data.cart_total;

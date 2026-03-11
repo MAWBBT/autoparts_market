@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse
 from decimal import Decimal
 from products.models import Product
 from .models import Cart, CartItem, Order, OrderItem
@@ -14,15 +15,13 @@ FREE_DELIVERY_THRESHOLD = Decimal('5000')  # бесплатно от суммы
 
 
 def get_or_create_cart(request):
-    if request.user.is_authenticated:
-        cart, _ = Cart.objects.get_or_create(user=request.user)
-    else:
-        if not request.session.session_key:
-            request.session.create()
-        cart, _ = Cart.objects.get_or_create(session_key=request.session.session_key)
+    if not request.user.is_authenticated:
+        raise ValueError("Cart is available only for authenticated users")
+    cart, _ = Cart.objects.get_or_create(user=request.user)
     return cart
 
 
+@login_required
 def cart_view(request):
     cart = get_or_create_cart(request)
     if not cart.items.exists():
@@ -38,6 +37,7 @@ def cart_view(request):
 
 
 @require_POST
+@login_required
 def add_to_cart(request):
     if request.content_type == 'application/json':
         data = json.loads(request.body)
@@ -46,7 +46,12 @@ def add_to_cart(request):
     product_id = data.get('product_id')
     quantity = int(data.get('quantity', 1))
     product = get_object_or_404(Product, id=product_id, available=True)
-    cart = get_or_create_cart(request)
+    try:
+        cart = get_or_create_cart(request)
+    except ValueError:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.content_type == 'application/json':
+            return JsonResponse({'success': False, 'detail': 'Authentication required'}, status=401)
+        return redirect(f"{reverse('login')}?next={request.path}")
     cart_item, created = CartItem.objects.get_or_create(
         cart=cart, product=product, defaults={'quantity': quantity},
     )
@@ -62,6 +67,7 @@ def add_to_cart(request):
 
 
 @require_POST
+@login_required
 def remove_from_cart(request, item_id):
     cart = get_or_create_cart(request)
     cart_item = get_object_or_404(CartItem, id=item_id, cart=cart)
@@ -70,6 +76,7 @@ def remove_from_cart(request, item_id):
 
 
 @require_POST
+@login_required
 def update_cart_item(request, item_id):
     cart = get_or_create_cart(request)
     cart_item = get_object_or_404(CartItem, id=item_id, cart=cart)
@@ -82,6 +89,7 @@ def update_cart_item(request, item_id):
     return redirect('cart:cart')
 
 
+@login_required
 def checkout(request):
     cart = get_or_create_cart(request)
     if not cart.items.exists():
@@ -101,8 +109,7 @@ def checkout(request):
         form = CheckoutForm(request.POST, initial=initial)
         if form.is_valid():
             order = Order(
-                user=request.user if request.user.is_authenticated else None,
-                session_key=request.session.session_key if not request.user.is_authenticated else None,
+                user=request.user,
                 full_name=form.cleaned_data['full_name'],
                 phone=form.cleaned_data['phone'],
                 email=form.cleaned_data['email'],
@@ -148,12 +155,9 @@ def order_list(request):
     })
 
 
+@login_required
 def order_detail(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    if request.user.is_authenticated and order.user != request.user:
-        return redirect('home')
-    if not request.user.is_authenticated and order.session_key != request.session.session_key:
-        return redirect('home')
+    order = get_object_or_404(Order, id=order_id, user=request.user)
     return render(request, 'cart/order_detail.html', {'order': order})
 
 
