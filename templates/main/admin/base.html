@@ -117,6 +117,34 @@
     .btn-action {
       margin: 0 2px;
     }
+    
+    .sidebar-logout-form {
+      margin: 0;
+    }
+    
+    .sidebar-logout-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px 20px;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.8);
+      text-align: left;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .sidebar-logout-btn:hover {
+      background-color: var(--sidebar-hover);
+      color: #ffffff;
+    }
+    
+    .sidebar-logout-btn i {
+      margin-right: 10px;
+      width: 20px;
+    }
   </style>
   {% block extra_css %}{% endblock %}
 </head>
@@ -163,9 +191,9 @@
         </a>
       </li>
       <li>
-        <form method="post" action="{% url 'logout' %}" class="d-inline">
+        <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
           {% csrf_token %}
-          <button type="submit" class="btn btn-link text-decoration-none p-0 text-white border-0">
+          <button type="submit" class="sidebar-logout-btn">
             <i class="bi bi-box-arrow-right"></i> Выход
           </button>
         </form>
