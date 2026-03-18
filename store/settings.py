@@ -59,27 +59,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'store.wsgi.application'
 
-# PostgreSQL (ЛР №7)
-# Настройте параметры подключения к вашей базе данных PostgreSQL
-# Создайте базу данных в PgAdmin перед запуском миграций
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mystore_db',  # Имя базы данных (создайте в PgAdmin)
         'USER': 'postgres',     # Пользователь PostgreSQL
-        'PASSWORD': '4x24oqwpH', # Пароль PostgreSQL (измените на свой)
+        'PASSWORD': '12345678', # Пароль PostgreSQL (измените на свой)
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
 
-# Для переключения обратно на SQLite3 (если нужно):
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -106,10 +96,6 @@ AUTH_USER_MODEL = 'accounts.User'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
-
-# Email настройки для отправки реальных писем
-# Для разработки можно использовать консольный бэкенд:
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Для реальной отправки email используйте SMTP:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
